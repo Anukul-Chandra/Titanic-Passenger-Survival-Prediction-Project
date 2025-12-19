@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app.py",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1766122027950,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1766122027950,
+            "name": "Commit-0",
+            "content": "from flask import Flask, request, jsonify\nimport pickle\nimport numpy as np\n\napp = Flask(__name__)\n\nmodel = pickle.load(open(\"final_model.pkl\", \"rb\"))\n\n@app.route(\"/\")\ndef home():\n    return \"Titanic Survival Prediction API is running successfully.\"\n\n@app.route(\"/desktop\")\ndef desktop():\n    return \"Welcome to the Titanic ML Flask App (Desktop Route).\"\n\n@app.route(\"/predict\", methods=[\"POST\"])\ndef predict():\n    try:\n        data = request.get_json()\n\n        features = np.array([[\n            data[\"Age\"],\n            data[\"Sex\"],\n            data[\"Pclass\"],\n            data[\"Parch\"],\n            data[\"Fare\"],\n            data[\"SibSp\"],\n            data[\"Embarked\"]\n        ]])\n\n        prediction = model.predict(features)[0]\n\n        result = \"Survived\" if prediction == 1 else \"Not Survived\"\n\n        return jsonify({\"prediction\": result})\n\n    except Exception as e:\n        return jsonify({\"error\": str(e)})\n\nif __name__ == \"__main__\":\n    app.run(debug=True)\n"
+        }
+    ]
+}
